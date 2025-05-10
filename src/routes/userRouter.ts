@@ -1,7 +1,7 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
 import jwt from "jsonwebtoken";
-import userAuth from "../middlewares/userAuth";
+// import userAuth from "../middlewares/userAuth";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 dotenv.config();
@@ -34,7 +34,7 @@ router.post("/login", async (req, res) => {
     .findUnique({
       where: {
         email,
-          hashedPassword
+        hashedPassword
         },
       })
       
@@ -51,16 +51,14 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.use(userAuth);
+// router.use(userAuth);
 
 router.get("/purchases", async (req, res) => {
   const {name, email} =  req.body;
-  const user = await client.purchase.findOne({
+  const user = await client.user.findUnique({
     where: {
-      user: {
         name,
         email
-      }
     }
   });
   res.json({ user });

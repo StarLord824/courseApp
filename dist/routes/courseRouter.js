@@ -8,14 +8,18 @@ const client_1 = require("@prisma/client");
 const router = express_1.default.Router();
 const client = new client_1.PrismaClient();
 router.get("/all", async (req, res) => {
-    await client.course.findMany().then((courses) => {
-        res.json(courses);
-    });
+    const courses = await client.course.findMany();
+    res.json(courses);
 });
-router.get("/:id", async (req, res) => {
-    const { id } = req.params;
-    await client.course.findUnique({ where: { id: Number(id) } }).then((course) => {
-        res.json(course);
+router.get("/:title", async (req, res) => {
+    const { title } = req.params;
+    const { id } = req.body;
+    const course = await client.course.findUnique({
+        where: {
+            id: id,
+            title: title
+        }
     });
+    res.json(course);
 });
 exports.default = router;

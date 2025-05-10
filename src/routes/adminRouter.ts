@@ -1,8 +1,11 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
 import jwt from "jsonwebtoken";
-import adminAuth from "../middlewares/adminAuth";
+import bcrypt from "bcrypt";
+import dotenv from "dotenv";
+// import adminAuth from "../middlewares/adminAuth";
 
+dotenv.config();
 const router = express.Router();
 const client = new PrismaClient();
 
@@ -10,12 +13,13 @@ const client = new PrismaClient();
 
 router.post("/signup", async (req, res) => {
   const { name, email, password } = req.body;
+  const hashedPassword = await bcrypt.hash(password, process.env.SALT_ROUNDS || 10);
 
   await client.admin.create({
     data: {
       name,
       email,
-      password,
+      hashedPassword,
     },
   });
 
@@ -24,13 +28,14 @@ router.post("/signup", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
+  const hashedPassword = await bcrypt.hash(password, process.env.SALT_ROUNDS || 10);
 
   try{
     const admin = await client.admin
       .findUnique({
         where: {
           email,
-          password
+          hashedPassword
         },
       })
       if (admin) {
@@ -46,20 +51,15 @@ router.post("/login", async (req, res) => {
 }); 
 
 router.post('course', async (req, res) => {
-    const { name, description, price, image, category, adminId } = req.body;
+    const { title, description, price, adminId } = req.body;
     try{
       const courseData= await client.course.create({
         data: {
-            name,
+            title,
             description,
             price,
-            image,
-            category,
-            admin: {
-                connect: {
-                    id: adminId
-                }
-            }
+            // image,
+            adminId
         }
       });
       res.json(courseData);
