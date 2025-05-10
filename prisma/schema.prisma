@@ -36,6 +36,22 @@ model Course {
   id        String   @id @default(cuid())
   title     String?
   description String?
+  price     Float?
+  image     String?
+
+  //add owner field
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Purchases{
+  id        String   @id @default(cuid())
+  userId    String
+  courseId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  //add owner field
+  user      User     @relation(fields: [userId], references: [id])
+  course    Course   @relation(fields: [courseId], references: [id])
+} 

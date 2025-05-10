@@ -6,7 +6,7 @@ import userAuth from "../middlewares/userAuth";
 const router = express.Router();
 const client = new PrismaClient();
 
-router.use(userAuth);
+// router.use(userAuth);
 
 router.post("/signup", async (req, res) => {
   const { name, email, password } = req.body;

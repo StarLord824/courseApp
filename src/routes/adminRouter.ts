@@ -1,9 +1,12 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
 import jwt from "jsonwebtoken";
+import adminAuth from "../middlewares/adminAuth";
 
 const router = express.Router();
 const client = new PrismaClient();
+
+// router.use(adminAuth);
 
 router.post("/signup", async (req, res) => {
   const { name, email, password } = req.body;
